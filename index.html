@@ -1,0 +1,259 @@
+!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة الثورة التحريرية المجيدة</title>
+    <style>
+        body {
+            background-color: #0b3d12;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 15px;
+        }
+        .quiz-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 15px;
+            padding: 25px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+        }
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #d4af37;
+            font-size: 1.6rem;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #ccc;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.5;
+            font-weight: bold;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-align: right;
+            transition: 0.2s;
+        }
+        .option-btn:hover {
+            background: #d4af37;
+            color: #fff;
+        }
+        .final-box {
+            text-align: center;
+        }
+        .final-title {
+            color: #d4af37;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+        .final-score {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .final-speech {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #f1f1f1;
+            text-align: justify;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid #d4af37;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card" id="app">
+        <div class="quiz-title">🇩🇿 مسابقة تحدي ذاكرة نوفمبر 🇩🇿</div>
+        <div class="quiz-header">
+            <span id="counter">السؤال: 1 من 15</span>
+            <span id="timer" style="color: #d4af37; font-weight: bold;">الوقت: 15 ث</span>
+        </div>
+        <div class="question-text" id="question">جارٍ تحميل الأسئلة...</div>
+        <div class="options-list" id="options"></div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "متى اندلعت الثورة التحريرية الكبرى في الجزائر؟",
+                options: ["5 جويلية 1962", "1 نوفمبر 1954", "8 ماي 1945", "1 أوت 1956"],
+                answer: 1
+            },
+            {
+                question: "من هو قائد جبهة التحرير الوطني التاريخي المفجر للثورة؟",
+                options: ["هواري بومدين", "مصالي الحاج", "مجموعة الستة التاريخية", "الأمير عبد القادر"],
+                answer: 2
+            },
+            {
+                question: "في أي ولاية تاريخية وقع مؤتمر الصيام؟",
+                options: ["الولاية الثالثة (منطقة القبائل)", "الولاية الأولى (الاوراس)", "الولاية الخامسة (وهران)", "الولاية الرابعة (الجزائر)"],
+                answer: 0
+            },
+            {
+                question: "ما هو تاريخ انعقاد مؤتمر الصيام التاريخي؟",
+                options: ["20 أوت 1956", "1 نوفمبر 1954", "5 جويلية 1962", "19 جوان 1965"],
+                answer: 0
+            },
+            {
+                question: "أين تم توقيع اتفاقيات إيفيان بين الحكومة المؤقتة للجمهورية الجزائرية وفرنسا؟",
+                options: ["باريس", "مدينة إيفيان بفرنسا", "القاهرة", "تونس العاصمة"],
+                answer: 1
+            },
+            {
+                question: "ما هو تاريخ الإعلان الرسمي عن وقف إطلاق النار في الجزائر؟",
+                options: ["19 مارس 1962", "5 جويلية 1962", "1 نوفمبر 1954", "20 أوت 1955"],
+                answer: 0
+            },
+            {
+                question: "ما هي المعركة الكبرى التي استمرت أياماً طوال في منطقة الأوراس وشهدت بطولات خارقة؟",
+                options: ["معركة الجرف الكبرى", "معركة إغيزان", "معركة باب الواد", "معركة سيدي إبراهيم"],
+                answer: 0
+            },
+            {
+                question: "من هو الشهيد البطل صاحب مقولة: «أعطونا آرائكم سنلقي بها في سلة المهملات»؟",
+                options: ["العربي بن مهيدي", "زيغود يوسف", "ديدوش مراد", "عبان رمضان"],
+                answer: 3
+            },
+            {
+                question: "ما هو التاريخ الحقيقي لإعلان الاستقلال واسترجاع السيادة الوطنية؟",
+                options: ["5 جويلية 1962", "1 نوفمبر 1954", "19 مارس 1962", "20 أوت 1956"],
+                answer: 0
+            },
+            {
+                question: "كم عدد الولايات التاريخية التي قُسّمت إليها الجزائر أثناء ثورة التحرير؟",
+                options: ["5 ولايات", "6 ولايات تاريخية", "7 ولايات", "10 ولايات"],
+                answer: 1
+            },
+            {
+                question: "من هو قائد الولاية التاريخية الخامسة (ناحية الغرب)?",
+                options: ["العربي بن مهيدي", "بوزيدي إبراهيم", "رابح بيطاط", "كريم بلقاسم"],
+                answer: 0
+            },
+            {
+                question: "ما هي جريدة جبهة التحرير الوطني التي كانت تمثل صوت الثورة في الخارج؟",
+                options: ["جريدة المجاهد", "جريدة الشعب", "جريدة الجمهورية", "جريدة المنار"],
+                answer: 0
+            },
+            {
+                question: "متى تأسس الاتحاد العام للعمال الجزائريين (UGTA) لدعم الثورة نقابياً؟",
+                options: ["24 أفريل 1956", "1 نوفمبر 1954", "5 جويلية 1962", "19 جوان 1965"],
+                answer: 0
+            },
+            {
+                question: "ما هي الولاية التاريخية التي انطلق منها هجومات الشمال القسنطيني بقيادة زيغود يوسف؟",
+                options: ["الولاية الثانية (المنطقة الثانية قسنطينة)", "الولاية الأولى", "الولاية الثالثة", "الولاية الرابعة"],
+                answer: 0
+            },
+            {
+                question: "من هو أول شهيد أُعدم بغيض المحشنة (المقصلة) في سرفاج بباريس أو سرفاج الجزائر؟",
+                options: ["أحمد زبانة", "عبد القادر زاباط", "علي بوحجة", "عمر بطوش"],
+                answer: 0
+            }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let timeLeft = 15;
+        let timerInterval;
+
+        const counterEl = document.getElementById("counter");
+        const timerEl = document.getElementById("timer");
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const appEl = document.getElementById("app");
+
+        function startTimer() {
+            timeLeft = 15;
+            timerEl.textContent = `الوقت: ${timeLeft} ث`;
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `الوقت: ${timeLeft} ث`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    currentIdx++;
+                    loadQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadQuiz() {
+            clearInterval(timerInterval);
+            if (currentIdx < quizData.length) {
+                counterEl.textContent = `السؤال: ${currentIdx + 1} من ${quizData.length}`;
+                let currentQ = quizData[currentIdx];
+                questionEl.textContent = currentQ.question;
+                optionsEl.innerHTML = "";
+                
+                currentQ.options.forEach((opt, index) => {
+                    let btn = document.createElement("button");
+                    btn.textContent = opt;
+                    btn.className = "option-btn";
+                    btn.onclick = () => selectAnswer(index);
+                    optionsEl.appendChild(btn);
+                });
+                startTimer();
+            } else {
+                timerEl.textContent = "";
+                counterEl.textContent = "";
+                appEl.innerHTML = `
+                    <div class="final-box">
+                        <div class="final-title">🏆 انتهت المسابقة بنجاح تام!</div>
+                        <div class="final-score">مجموع النقاط النهائية: ${score} من ${quizData.length}</div>
+                        <div class="final-speech">
+                            <strong style="color: #d4af37; display:block; margin-bottom:8px; text-align:center;">عاشت الجزائر حرة مستقلة 🇩🇿</strong>
+                            إن شهر نوفمبر ليس مجرد محطة تاريخية عابرة في تقويم الأزمان، بل هو الفجر الصادق الذي انبعث من عتمة الليل الاستعماري ليضيء درب الحرية والكرامة. لقد خطّ شهداؤنا الأبرار بدمائهم الزكية ملحمة من أخلد الملاحم البشرية، معلنين أن الجزائر للأحرار وأن سيادتها خط أحمر لا يُمس. إن إحياءنا لهذه الذكرى الخالدة عبر هذه المسابقة هو وفاء لتضحياتهم الجسام، وتذكير للأجيال بأن الاستقلال أمانة غالية تتطلب منا العزم والعمل لبناء وطن قوي عزيز. المجد والخلود لشهدائنا الأبرار، وتحيا الجزائر أبيةً شامخةً إلى الأبد!
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            clearInterval(timerInterval);
+            if (selectedIndex === quizData[currentIdx].answer) {
+                score++;
+            }
+            currentIdx++;
+            loadQuiz();
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>
